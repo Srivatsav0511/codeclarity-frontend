@@ -20,13 +20,13 @@ export default function Chat() {
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
-  
+
   useEffect(() => {
     const saved = localStorage.getItem("codeclarity-chat");
     if (saved) setMessages(JSON.parse(saved));
   }, []);
 
-  
+
   useEffect(() => {
     localStorage.setItem("codeclarity-chat", JSON.stringify(messages));
   }, [messages]);
@@ -50,7 +50,7 @@ export default function Chat() {
     };
   };
 
-  
+
   const isCodeInput = (text: string): boolean => {
     const codePatterns = ["{", "}", "(", ")", "=", ";", "function", "class", "let", "const", "var", "if", "for", "while"];
     return codePatterns.some((p) => text.includes(p));
@@ -91,12 +91,11 @@ export default function Chat() {
     }
 
     try {
-      const res = await fetch("http://codeclarity-backend.vercel.app/", {
+      const res = await fetch("https://codeclarity-backend.vercel.app/api/explain", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: userText }),
       });
-
       const data = await res.json();
       const parsed = parseCodeResponse(data.explanation || "");
 
@@ -123,7 +122,7 @@ export default function Chat() {
   // Render bot explanation block
   const renderCodeBlock = (msg: BotMessage) => (
     <div className="w-full bg-neutral-800 border border-neutral-700 rounded-xl p-5 font-mono text-sm space-y-5">
-      
+
       <div>
         <div className="font-semibold text-blue-400 text-lg mb-1">Summary</div>
         <p>{msg.summary}</p>
@@ -167,7 +166,7 @@ export default function Chat() {
 
       {/* CHAT AREA */}
       <div className="flex-1 overflow-y-auto p-6 space-y-6 pt-24">
-        
+
         {messages.length === 0 && (
           <p className="text-neutral-500 text-center mt-20 text-sm sticky top-2/4">
             Enter any code snippet and I’ll explain it ✨
