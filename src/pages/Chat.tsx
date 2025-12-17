@@ -91,7 +91,7 @@ export default function Chat() {
     }
 
     try {
-      const res = await fetch("https://codeclarity-backend.vercel.app/api/explain", {
+      const res = await fetch("https://codeclarity-backend-plc5wj3ow-srivatsav0511s-projects.vercel.app/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: userText }),
