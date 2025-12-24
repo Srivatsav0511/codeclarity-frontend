@@ -20,23 +20,19 @@ export default function Chat() {
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
-
   useEffect(() => {
     const saved = localStorage.getItem("codeclarity-chat");
     if (saved) setMessages(JSON.parse(saved));
   }, []);
 
-
   useEffect(() => {
     localStorage.setItem("codeclarity-chat", JSON.stringify(messages));
   }, [messages]);
 
-  // Scroll to bottom on update
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  // Parse backend explanation (simple regex splitter)
   const parseCodeResponse = (raw: string): BotMessage => {
     const parts = raw.split(/Summary:|Breakdown:|Output:|Suggestions:/i);
 
@@ -50,19 +46,16 @@ export default function Chat() {
     };
   };
 
-
   const isCodeInput = (text: string): boolean => {
     const codePatterns = ["{", "}", "(", ")", "=", ";", "function", "class", "let", "const", "var", "if", "for", "while"];
     return codePatterns.some((p) => text.includes(p));
   };
 
-  // Send message to backend
   const handleSend = async () => {
     if (!input.trim() || loading) return;
 
     const userText = input;
 
-    // Add user message
     setMessages((prev) => [
       ...prev,
       { id: Date.now(), sender: "user", text: userText },
@@ -71,7 +64,6 @@ export default function Chat() {
     setInput("");
     setLoading(true);
 
-    // If not code → Show warning
     if (!isCodeInput(userText)) {
       setMessages((prev) => [
         ...prev,
@@ -91,7 +83,8 @@ export default function Chat() {
     }
 
     try {
-      const res = await fetch("https://codeclarity-backend.vercel.app/", {
+      // ✅ FIXED: Added /api/explain
+      const res = await fetch("https://codeclarity-backend.vercel.app/api/explain", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: userText }),
@@ -119,10 +112,8 @@ export default function Chat() {
     setLoading(false);
   };
 
-  // Render bot explanation block
   const renderCodeBlock = (msg: BotMessage) => (
     <div className="w-full bg-neutral-800 border border-neutral-700 rounded-xl p-5 font-mono text-sm space-y-5">
-
       <div>
         <div className="font-semibold text-blue-400 text-lg mb-1">Summary</div>
         <p>{msg.summary}</p>
@@ -163,13 +154,10 @@ export default function Chat() {
 
   return (
     <div className="min-h-screen bg-neutral-900 text-white flex flex-col font-mono">
-
-      {/* CHAT AREA */}
       <div className="flex-1 overflow-y-auto p-6 space-y-6 pt-24">
-
         {messages.length === 0 && (
           <p className="text-neutral-500 text-center mt-20 text-sm sticky top-2/4">
-            Enter any code snippet and I’ll explain it ✨
+            Enter any code snippet and I'll explain it ✨
           </p>
         )}
 
@@ -190,10 +178,8 @@ export default function Chat() {
         <div ref={bottomRef} />
       </div>
 
-      {/* INPUT */}
       <div className="w-full px-4 py-4 bg-neutral-900 flex justify-center border-t border-neutral-800 sticky bottom-0">
         <div className="w-full md:w-[70%] bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-3 flex items-center gap-3">
-
           <textarea
             value={input}
             placeholder="Paste your code here…"
@@ -215,7 +201,6 @@ export default function Chat() {
           >
             Send
           </button>
-
         </div>
       </div>
     </div>
