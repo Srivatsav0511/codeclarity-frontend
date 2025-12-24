@@ -1,12 +1,10 @@
-import { Link, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
 
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
-  const location = useLocation();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -19,24 +17,6 @@ export default function Navbar() {
     }
   };
 
-  // Track which section is in view
-  useEffect(() => {
-    const handleScroll = () => {
-      const featuresSection = document.getElementById("features");
-      if (featuresSection) {
-        const rect = featuresSection.getBoundingClientRect();
-        if (rect.top <= 100 && rect.bottom >= 100) {
-          setActiveSection("features");
-        } else {
-          setActiveSection("home");
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
     <nav className="w-full flex justify-between items-center px-6 md:px-10 py-5 bg-neutral-900 text-white border-b border-neutral-700 sticky top-0 z-50">
 
@@ -47,16 +27,12 @@ export default function Navbar() {
 
       {/* ----- DESKTOP MENU ----- */}
       <div className="hidden md:flex items-center gap-8 text-sm font-mono">
-        <Link 
-          to="/" 
-          className={`hover:text-gray-300 transition ${activeSection === "home" && location.pathname === "/" ? "text-white" : "text-gray-400"}`}
-          onClick={scrollToTop}
-        >
+        <Link to="/" className="hover:text-gray-300 transition-colors duration-300" onClick={scrollToTop}>
           Home
         </Link>
         <Link 
           to="/#features" 
-          className={`hover:text-gray-300 transition ${activeSection === "features" ? "text-white" : "text-gray-400"}`}
+          className="hover:text-gray-300 transition-colors duration-300"
           onClick={(e) => {
             e.preventDefault();
             scrollToFeatures();
@@ -64,17 +40,14 @@ export default function Navbar() {
         >
           Features
         </Link>
-        <Link 
-          to="/chat" 
-          className={`hover:text-gray-300 transition ${location.pathname === "/chat" ? "text-white" : "text-gray-400"}`}
-        >
+        <Link to="/chat" className="hover:text-gray-300 transition-colors duration-300">
           Try App
         </Link>
       </div>
 
       {/* ----- MOBILE MENU BUTTON ----- */}
       <button
-        className="md:hidden text-2xl"
+        className="md:hidden text-2xl transition-transform duration-200 active:scale-95"
         onClick={() => setOpen(!open)}
       >
         {open ? <FiX /> : <FiMenu />}
@@ -82,7 +55,7 @@ export default function Navbar() {
 
       {/* ----- MOBILE DROPDOWN MENU ----- */}
       <div
-        className={`md:hidden absolute top-full left-0 w-full bg-neutral-900 border-b border-neutral-700 transform transition-all duration-300 overflow-hidden
+        className={`md:hidden absolute top-full left-0 w-full bg-neutral-900 border-b border-neutral-700 transform transition-all duration-300 ease-in-out overflow-hidden
           ${open ? "max-h-60 opacity-100" : "max-h-0 opacity-0"}
         `}
       >
@@ -90,7 +63,7 @@ export default function Navbar() {
 
           <Link
             to="/"
-            className={`hover:text-gray-300 transition ${activeSection === "home" && location.pathname === "/" ? "text-white" : "text-gray-400"}`}
+            className="hover:text-gray-300 transition-colors duration-300"
             onClick={() => {
               setOpen(false);
               scrollToTop();
@@ -101,7 +74,7 @@ export default function Navbar() {
 
           <Link
             to="/#features"
-            className={`hover:text-gray-300 transition ${activeSection === "features" ? "text-white" : "text-gray-400"}`}
+            className="hover:text-gray-300 transition-colors duration-300"
             onClick={(e) => {
               e.preventDefault();
               setOpen(false);
@@ -113,7 +86,7 @@ export default function Navbar() {
 
           <Link
             to="/chat"
-            className={`hover:text-gray-300 transition ${location.pathname === "/chat" ? "text-white" : "text-gray-400"}`}
+            className="hover:text-gray-300 transition-colors duration-300"
             onClick={() => setOpen(false)}
           >
             Try App
