@@ -1,23 +1,49 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
 
+
 export default function Navbar() {
-  const [open, setOpen] = useState(false); // mobile menu state
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const scrollToFeatures = () => {
+    const featuresSection = document.getElementById("features");
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <nav className="w-full flex justify-between items-center px-6 md:px-10 py-5 bg-neutral-900 text-white border-b border-neutral-700 sticky top-0 z-50">
 
       {/* Logo */}
-      <Link to="/" className="text-xl font-serif tracking-tight">
+      <Link to="/" className="text-xl font-serif tracking-tight" onClick={scrollToTop}>
         CODECLARITY
       </Link>
 
       {/* ----- DESKTOP MENU ----- */}
       <div className="hidden md:flex items-center gap-8 text-sm font-mono">
-        <Link to="/" className="hover:text-gray-300 transition">Home</Link>
-        <a href="#features" className="hover:text-gray-300 transition">Features</a>
-        <Link to="/chat" className="hover:text-gray-300 transition">Try App</Link>
+        <Link to="/" className="hover:text-gray-300 transition" onClick={scrollToTop}>
+          Home
+        </Link>
+        <Link 
+          to="/#features" 
+          className="hover:text-gray-300 transition"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToFeatures();
+          }}
+        >
+          Features
+        </Link>
+        <Link to="/chat" className="hover:text-gray-300 transition">
+          Try App
+        </Link>
       </div>
 
       {/* ----- MOBILE MENU BUTTON ----- */}
@@ -39,18 +65,25 @@ export default function Navbar() {
           <Link
             to="/"
             className="hover:text-gray-300 transition"
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false);
+              scrollToTop();
+            }}
           >
             Home
           </Link>
 
-          <a
-            href="#features"
+          <Link
+            to="/#features"
             className="hover:text-gray-300 transition"
-            onClick={() => setOpen(false)}
+            onClick={(e) => {
+              e.preventDefault();
+              setOpen(false);
+              scrollToFeatures();
+            }}
           >
             Features
-          </a>
+          </Link>
 
           <Link
             to="/chat"
